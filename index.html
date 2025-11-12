@@ -3,16 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cumpleaños del Equipo - CCF</title>
+  <title>Cumpleaños del Equipo CCF</title>
 
   <!-- Bootstrap -->
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
-  />
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
   />
 
   <style>
@@ -21,21 +17,28 @@
       font-family: "Segoe UI", sans-serif;
     }
 
-    h1,
-    h2 {
+    h1, h2 {
       color: #0b5ed7;
       font-weight: bold;
     }
 
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
     .birthday-card {
       border: none;
+      border-radius: 1rem;
       cursor: pointer;
       transition: all 0.25s ease;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .birthday-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
 
     .next-birthday-card {
@@ -44,25 +47,25 @@
     }
 
     @keyframes pulseAccent {
-      0% {
-        box-shadow: 0 0 0 0 rgba(11, 94, 215, 0.7);
-      }
-      70% {
-        box-shadow: 0 0 0 10px rgba(11, 94, 215, 0);
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(11, 94, 215, 0);
-      }
+      0% { box-shadow: 0 0 0 0 rgba(11, 94, 215, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(11, 94, 215, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(11, 94, 215, 0); }
     }
 
     .today-birthday .card-body {
       background-color: #d8f9e0;
-      border-radius: 0 0 0.5rem 0.5rem;
+      border-radius: 0 0 1rem 1rem;
     }
 
     .modal-header {
       background-color: #0b5ed7;
       color: white;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+
+    .modal-content {
+      border-radius: 1rem;
     }
 
     .btn-close-white {
@@ -70,13 +73,8 @@
     }
 
     @keyframes bounce {
-      0%,
-      100% {
-        transform: translateY(-15%);
-      }
-      50% {
-        transform: translateY(0);
-      }
+      0%, 100% { transform: translateY(-15%); }
+      50% { transform: translateY(0); }
     }
 
     #nextBirthdayModal .modal-content {
@@ -86,121 +84,24 @@
     }
 
     @keyframes zoomIn {
-      from {
-        transform: scale(0.8);
-        opacity: 0;
-      }
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <!-- Modal de Detalles -->
-  <div
-    class="modal fade"
-    id="birthdayModal"
-    tabindex="-1"
-    aria-labelledby="birthdayModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">🎉 ¡Feliz Cumpleaños! 🎉</h5>
-          <button
-            type="button"
-            class="btn-close btn-close-white"
-            data-bs-dismiss="modal"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div class="text-center mb-3">
-            <span style="font-size: 6rem">🎂</span>
-          </div>
-          <h3 id="modal-name" class="text-center"></h3>
-          <p class="text-center text-muted" id="modal-date"></p>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              🎵 <strong>Canción:</strong> <span id="modal-song"></span>
-            </li>
-            <li class="list-group-item">
-              🎨 <strong>Color Favorito:</strong> <span id="modal-color"></span>
-            </li>
-            <li class="list-group-item">
-              ⭐ <strong>Tema:</strong> <span id="modal-theme"></span>
-            </li>
-            <li class="list-group-item">
-              ❤️ <strong>Favoritos:</strong>
-              <span id="modal-activity"></span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal de Celebración -->
-  <div
-    class="modal fade"
-    id="celebrationModal"
-    tabindex="-1"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content text-center">
-        <div class="modal-body p-5">
-          <div style="font-size: 6rem; animation: bounce 1.5s infinite">🎉</div>
-          <h2 class="fw-bold text-primary my-3">¡FELIZ CUMPLEAÑOS!</h2>
-          <h3 id="celebrationName" class="h3"></h3>
-          <div class="my-4" style="font-size: 4rem">🎂🎈🎁</div>
-          <p class="lead text-muted mb-4">
-            ¡Que tengas un día increíble lleno de alegría!
-          </p>
-          <div
-            id="celebrationDetails"
-            class="bg-light p-3 rounded mb-4 text-start"
-          ></div>
-          <button
-            type="button"
-            class="btn btn-primary btn-lg"
-            data-bs-dismiss="modal"
-          >
-            ¡Gracias! 🎉
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal del Próximo Cumpleaños -->
-  <div
-    class="modal fade"
-    id="nextBirthdayModal"
-    tabindex="-1"
-    aria-hidden="true"
-  >
+  <!-- Modal de información / celebración -->
+  <div class="modal fade" id="infoModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content text-center border-0 shadow-lg">
-        <div class="modal-body p-5">
-          <div style="font-size: 4rem; animation: bounce 1.5s infinite">🎉</div>
-          <h2 class="fw-bold text-primary mb-3">¡Próximo Cumpleaños!</h2>
-          <h3 id="nextName" class="mb-3"></h3>
-          <p id="nextDate" class="text-muted mb-4"></p>
-          <div
-            class="bg-light p-4 rounded text-start mb-3"
-            id="nextDetails"
-          ></div>
-          <p id="nextCountdown" class="fw-bold text-success"></p>
-          <button
-            type="button"
-            class="btn btn-primary btn-lg mt-3"
-            data-bs-dismiss="modal"
-          >
-            ¡Genial! 🎈
-          </button>
+        <div class="modal-header">
+          <h5 class="modal-title w-100 fw-bold" id="modalTitle"></h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div style="font-size: 3rem;" id="modalEmoji">🎂</div>
+          <div id="modalDetails" class="text-start mt-3"></div>
+          <button type="button" class="btn btn-primary mt-4" data-bs-dismiss="modal">Cerrar 🎈</button>
         </div>
       </div>
     </div>
@@ -208,7 +109,7 @@
 
   <!-- Contenido principal -->
   <div class="container py-5">
-    <h1 class="text-center mb-4">🥳 Cumpleaños del Equipo CCF 🥳</h1>
+    <h1>🥳 Cumpleaños del Equipo CCF 🥳</h1>
 
     <h2 class="mb-3">🎁 Próximo Cumpleaños</h2>
     <div id="next-birthday" class="row mb-5 justify-content-center"></div>
@@ -220,11 +121,12 @@
     <div id="all-birthdays" class="row g-4"></div>
   </div>
 
-  <!-- Bootstrap JS -->
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
-        const birthdayData = [
+    const birthdayData = [
             {"name": "Ricardo", "dob": "1979-02-09", "theme": "Star wars o el mar", "activity": "RT D2", "color": "Azul o verde", "song": "Tema de star wars", "photo": ""},
             {"name": "Norma Isabel Corona Vizcaino", "dob": "1982-08-19", "theme": "Fiesta, globos, banda, mariachi, folklor", "activity": "Bailar zapateado, cumbia y banda", "color": "Cafe, beige y rosa", "song": "Mañanitas alegres o con banda", "photo": "https..."},
             {"name": "Oscar Eliecer Lucio Palacio", "dob": "1987-01-01", "theme": "Calabozos y Dragones, libros de terror y fantasía. Magic the gathering", "activity": "Leer, jugar Rol o magic", "color": "negro", "song": "\"Happy birthday\" de the Beatles o ", "photo": ""},
@@ -249,61 +151,54 @@
             {"name": "Karizma Macías Contreras", "dob": "2025-08-21", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
             {"name": "Arlette Alejandra Cruzado Rodríguez", "dob": "2025-10-16", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
             {"name": "Vladimir Zárate Nava", "dob": "2025-12-28", "theme": "", "activity": "", "color": "", "song": "", "photo": ""}, 
-                  ];
+            {"name": "José Antonio Benavides Paredes", "dob": "1995-11-05", "theme": "Animal crossing", "activity": "Tocar música", "color": "Azul", "song": "Tota-pop de Totakeke", "photo": ""},
+    ];
 
-      document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
       const today = new Date();
       const currentMonth = today.getMonth();
       const currentDate = today.getDate();
 
-      const processed = birthdayData
-        .map((p) => {
-          const dob = new Date(p.dob + "T00:00");
-          const month = dob.getMonth();
-          const day = dob.getDate();
-          const isToday = month === currentMonth && day === currentDate;
-          return { ...p, dob, month, day, isToday };
-        })
-        .sort((a, b) => a.month - b.month || a.day - b.day);
+      const processed = birthdayData.map(p => {
+        const dob = new Date(p.dob + "T00:00");
+        return { ...p, dob, month: dob.getMonth(), day: dob.getDate(), isToday: dob.getMonth() === currentMonth && dob.getDate() === currentDate };
+      }).sort((a,b) => a.month - b.month || a.day - b.day);
 
-      let next = processed.find(
-        (p) => p.month > currentMonth || (p.month === currentMonth && p.day >= currentDate)
-      );
+      const todayBirthdays = processed.filter(p => p.isToday);
+      let next = processed.find(p => p.month > currentMonth || (p.month === currentMonth && p.day >= currentDate));
       if (!next) next = processed[0];
 
-      const nextContainer = document.getElementById("next-birthday");
-      nextContainer.innerHTML = createCard(next, true);
+      // Mostrar tarjetas
+      document.getElementById("next-birthday").innerHTML = createCard(next, true);
+      const monthBirthdays = processed.filter(p => p.month === currentMonth);
+      document.getElementById("this-month").innerHTML = monthBirthdays.length
+        ? monthBirthdays.map(p => createCard(p)).join("")
+        : "<p class='text-muted'>No hay cumpleaños este mes.</p>";
+      document.getElementById("all-birthdays").innerHTML = processed.map(p => createCard(p)).join("");
 
-      const thisMonth = processed.filter((p) => p.month === currentMonth);
-      const monthContainer = document.getElementById("this-month");
-      if (thisMonth.length) {
-        thisMonth.forEach((p) => (monthContainer.innerHTML += createCard(p)));
-      } else {
-        monthContainer.innerHTML = "<p class='text-muted'>No hay cumpleaños este mes.</p>";
-      }
-
-      const allContainer = document.getElementById("all-birthdays");
-      processed.forEach((p) => (allContainer.innerHTML += createCard(p)));
-
-      document.querySelectorAll(".birthday-card").forEach((card) => {
-        card.addEventListener("click", () => showDetails(card));
+      // Clics en tarjetas
+      document.querySelectorAll(".birthday-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const person = processed.find(p => p.name === card.dataset.name);
+          showInfo(person);
+        });
       });
 
-      // Mostrar modal del próximo cumpleaños automáticamente
-      setTimeout(() => showNextBirthdayModal(next), 1000);
+      // Ventana emergente automática
+      setTimeout(() => {
+        if (todayBirthdays.length > 0) {
+          showCelebration(todayBirthdays[0]);
+        } else {
+          showNext(next);
+        }
+      }, 1000);
     });
 
     function createCard(p, highlight = false) {
       const date = p.dob.toLocaleDateString("es-ES", { day: "numeric", month: "long" });
       return `
         <div class="col-md-4 col-lg-3">
-          <div class="card birthday-card ${highlight ? "next-birthday-card" : ""} ${p.isToday ? "today-birthday" : ""}"
-            data-name="${p.name}"
-            data-date="${date}"
-            data-song="${p.song}"
-            data-color="${p.color}"
-            data-theme="${p.theme}"
-            data-activity="${p.activity}">
+          <div class="card birthday-card ${highlight ? "next-birthday-card" : ""} ${p.isToday ? "today-birthday" : ""}" data-name="${p.name}">
             <div class="text-center pt-4 pb-2"><span style="font-size:4rem;">🎂</span></div>
             <div class="card-body text-center">
               <h5>${p.name}</h5>
@@ -314,38 +209,46 @@
         </div>`;
     }
 
-    function showDetails(card) {
-      const d = card.dataset;
-      document.getElementById("modal-name").textContent = d.name;
-      document.getElementById("modal-date").textContent = d.date;
-      document.getElementById("modal-song").textContent = d.song || "—";
-      document.getElementById("modal-color").textContent = d.color || "—";
-      document.getElementById("modal-theme").textContent = d.theme || "—";
-      document.getElementById("modal-activity").textContent = d.activity || "—";
-      new bootstrap.Modal("#birthdayModal").show();
-    }
-
-    // === Modal del próximo cumpleaños ===
-    function showNextBirthdayModal(person) {
-      const today = new Date();
-      const nextDate = new Date(today.getFullYear(), person.month, person.day);
-      if (nextDate < today) nextDate.setFullYear(today.getFullYear() + 1);
-      const diffDays = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
-
-      document.getElementById("nextName").textContent = person.name;
-      document.getElementById("nextDate").textContent = person.dob.toLocaleDateString("es-ES", {
-        day: "numeric",
-        month: "long"
-      });
-      document.getElementById("nextCountdown").textContent =
-        diffDays === 0 ? "🎂 ¡Es hoy!" : `🎈 Faltan ${diffDays} día${diffDays > 1 ? "s" : ""}`;
-      document.getElementById("nextDetails").innerHTML = `
+    function showInfo(person) {
+      document.getElementById("modalTitle").textContent = person.name;
+      document.getElementById("modalEmoji").textContent = "🎉";
+      document.getElementById("modalDetails").innerHTML = `
         <p><strong>🎨 Color favorito:</strong> ${person.color}</p>
         <p><strong>⭐ Tema:</strong> ${person.theme}</p>
         <p><strong>❤️ Le gusta:</strong> ${person.activity}</p>
-        <p><strong>🎵 Canción:</strong> ${person.song}</p>
-      `;
-      new bootstrap.Modal("#nextBirthdayModal").show();
+        <p><strong>🎵 Canción:</strong> ${person.song}</p>`;
+      new bootstrap.Modal("#infoModal").show();
+    }
+
+    function showCelebration(person) {
+      document.getElementById("modalTitle").textContent = `🎂 ¡Feliz cumpleaños ${person.name}! 🎉`;
+      document.getElementById("modalEmoji").textContent = "🎈";
+      document.getElementById("modalDetails").innerHTML = `
+        <p><strong>🎨 Color favorito:</strong> ${person.color}</p>
+        <p><strong>⭐ Tema:</strong> ${person.theme}</p>
+        <p><strong>❤️ Le gusta:</strong> ${person.activity}</p>
+        <p><strong>🎵 Canción:</strong> ${person.song}</p>`;
+      new bootstrap.Modal("#infoModal").show();
+
+      // Confeti
+      const end = Date.now() + 2 * 1000;
+      (function frame() {
+        confetti({ particleCount: 5, spread: 100, origin: { x: Math.random(), y: Math.random() - 0.2 } });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+
+    function showNext(person) {
+      document.getElementById("modalTitle").textContent = "🎁 Próximo Cumpleaños";
+      document.getElementById("modalEmoji").textContent = "🎉";
+      document.getElementById("modalDetails").innerHTML = `
+        <h4 class="fw-bold mb-2">${person.name}</h4>
+        <p>Fecha: <strong>${person.dob.toLocaleDateString("es-ES", { day: "numeric", month: "long" })}</strong></p>
+        <p><strong>🎨 Color favorito:</strong> ${person.color}</p>
+        <p><strong>⭐ Tema:</strong> ${person.theme}</p>
+        <p><strong>❤️ Le gusta:</strong> ${person.activity}</p>
+        <p><strong>🎵 Canción:</strong> ${person.song}</p>`;
+      new bootstrap.Modal("#infoModal").show();
     }
   </script>
 </body>
