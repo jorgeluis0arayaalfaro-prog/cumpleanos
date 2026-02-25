@@ -5,16 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cumpleaños del Equipo CCF</title>
 
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
 
   <style>
     body {
       background: linear-gradient(to top, #c1e1ff 0%, #f0f9ff 100%);
-      font-family: "Segoe UI", sans-serif;
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       overflow-x: hidden;
+    }
+
+    /* Forzamos a que los iconos usen la librería universal de emojis */
+    .universal-emoji {
+      font-family: 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif !important;
     }
 
     h1, h2 {
@@ -32,16 +36,14 @@
       border-radius: 1rem;
       cursor: pointer;
       transition: all 0.25s ease;
-      /* CAMBIO AQUÍ: Color de fondo más oscuro para resaltar las auras */
-      background: #eaeff2; 
+      background: #eaeff2;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .birthday-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      /* Opcional: al pasar el mouse se puede aclarar un poco */
-      background: #f8f9fa;
+      background: #ffffff;
     }
 
     .next-birthday-card {
@@ -69,7 +71,6 @@
 
     .modal-content {
       border-radius: 1rem;
-      /* Aseguramos que el modal siga siendo blanco por dentro para contraste */
       background-color: white; 
     }
 
@@ -78,29 +79,59 @@
     }
 
     /* -------------------------------------
-       ANIMACIÓN DE AURA PARA LOS ICONOS
+       ANIMACIONES COMBINADAS (MOVIMIENTO + AURA)
        ------------------------------------- */
-    .aura-icon {
+    .icon-base {
       font-size: 1.5rem;
       margin-right: 5px;
       vertical-align: middle;
       display: inline-block;
-      animation: pulseAura 2s infinite ease-in-out;
     }
 
-    @keyframes pulseAura {
-      0%, 100% {
-        transform: scale(1);
-        /* El brillo será más visible sobre el nuevo fondo grisáceo */
-        filter: drop-shadow(0 0 2px var(--aura-color, gold));
-      }
-      50% {
-        transform: scale(1.15);
-        filter: drop-shadow(0 0 8px var(--aura-color, gold));
-      }
+    .anim-float { animation: floatAnim 3s ease-in-out infinite; }
+    @keyframes floatAnim {
+      0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 2px var(--aura-color, gold)); }
+      50% { transform: translateY(-8px); filter: drop-shadow(0 0 12px var(--aura-color, gold)); }
     }
 
-    /* Animación especial para Daniel (avión) */
+    .anim-spin { animation: spinAnim 5s linear infinite; }
+    @keyframes spinAnim {
+      0% { transform: rotate(0deg); filter: drop-shadow(0 0 2px var(--aura-color, gold)); }
+      50% { filter: drop-shadow(0 0 12px var(--aura-color, gold)); }
+      100% { transform: rotate(360deg); filter: drop-shadow(0 0 2px var(--aura-color, gold)); }
+    }
+
+    .anim-bounce { animation: bounceAnim 1.2s ease-in-out infinite; }
+    @keyframes bounceAnim {
+      0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 2px var(--aura-color, gold)); }
+      50% { transform: translateY(-10px) scale(1.05); filter: drop-shadow(0 0 12px var(--aura-color, gold)); }
+    }
+
+    .anim-shake { animation: shakeAnim 0.8s ease-in-out infinite; }
+    @keyframes shakeAnim {
+      0%, 100% { transform: rotate(0deg); filter: drop-shadow(0 0 2px var(--aura-color, gold)); }
+      25% { transform: rotate(-15deg); filter: drop-shadow(0 0 8px var(--aura-color, gold)); }
+      75% { transform: rotate(15deg); filter: drop-shadow(0 0 8px var(--aura-color, gold)); }
+    }
+
+    .anim-pulse { animation: pulseAnim 2s ease-in-out infinite; }
+    @keyframes pulseAnim {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px var(--aura-color, gold)); }
+      50% { transform: scale(1.2); filter: drop-shadow(0 0 12px var(--aura-color, gold)); }
+    }
+
+    /* Tu tridente súper épico */
+    .anim-trident {
+      font-size: 2.2rem !important;
+      margin-right: 8px;
+      animation: powerTrident 2s infinite ease-in-out;
+    }
+    @keyframes powerTrident {
+      0%, 100% { transform: scale(1) translateY(0); filter: drop-shadow(0 0 2px var(--aura-color, #0b5ed7)); }
+      50% { transform: scale(1.15) translateY(-5px); filter: drop-shadow(0 0 15px var(--aura-color, #0b5ed7)); }
+    }
+
+    /* Avión de Daniel */
     .plane-container {
       position: relative;
       display: inline-block;
@@ -116,17 +147,17 @@
       pointer-events: none;
     }
     @keyframes flyPlane {
-      0% { transform: translateX(-40px) translateY(15px) scale(0.8); opacity: 0; }
+      0% { transform: translateX(-40px) translateY(15px) scale(0.8); opacity: 0; filter: drop-shadow(0 0 5px var(--aura-color, red)); }
       15% { opacity: 1; }
       85% { opacity: 1; }
-      100% { transform: translateX(180px) translateY(-15px) scale(1.2); opacity: 0; }
+      100% { transform: translateX(180px) translateY(-15px) scale(1.2); opacity: 0; filter: drop-shadow(0 0 15px var(--aura-color, red)); }
     }
 
-    /* Animación especial para Arturo (pastel) */
+    /* Pastel Especial Grande de Arturo */
     .arturo-cake {
       font-size: 4rem;
       display: inline-block;
-      animation: floatAnim 2s infinite ease-in-out;
+      animation: floatArturo 2s infinite ease-in-out;
       position: relative;
     }
     .arturo-cake::after {
@@ -137,9 +168,9 @@
       font-size: 1.5rem;
       animation: sparkle 1.5s infinite alternate ease-in-out;
     }
-    @keyframes floatAnim {
+    @keyframes floatArturo {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
+      50% { transform: translateY(-8px); }
     }
     @keyframes sparkle {
       0% { opacity: 0.3; transform: scale(0.8) rotate(-10deg); }
@@ -156,7 +187,7 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
-          <div style="font-size: 4rem;" id="modalEmojiContainer"></div>
+          <div style="font-size: 4rem;" class="universal-emoji" id="modalEmojiContainer"></div>
           <div id="modalDetails" class="text-start mt-3"></div>
           <button type="button" class="btn btn-primary mt-4" data-bs-dismiss="modal">Cerrar 🎈</button>
         </div>
@@ -165,15 +196,16 @@
   </div>
 
   <div class="container py-5">
-    <h1>🥳 Cumpleaños del Equipo CCF 🥳</h1>
+    <h1 class="universal-emoji">🥳 Cumpleaños del Equipo CCF 🥳</h1>
+    <div id="error-box" class="alert alert-danger d-none text-center"></div>
 
-    <h2 class="mb-3">🎁 Próximo Cumpleaños</h2>
+    <h2 class="mb-3 universal-emoji">🎁 Próximo Cumpleaños</h2>
     <div id="next-birthday" class="row mb-5 justify-content-center"></div>
 
-    <h2 class="mb-3">💖 Cumpleaños de Este Mes</h2>
+    <h2 class="mb-3 universal-emoji">💖 Cumpleaños de Este Mes</h2>
     <div id="this-month" class="row g-4 mb-5"></div>
 
-    <h2 class="mb-3">🗓️ Todos los Cumpleaños</h2>
+    <h2 class="mb-3 universal-emoji">🗓️ Todos los Cumpleaños</h2>
     <div id="all-birthdays" class="row g-4"></div>
   </div>
 
@@ -182,35 +214,34 @@
 
   <script>
     const birthdayData = [
-            {"name": "Ricardo", "dob": "1979-02-09", "theme": "Star wars o el mar", "activity": "RT D2", "color": "Azul o verde", "song": "Tema de star wars", "photo": ""},
-            {"name": "Norma Isabel Corona Vizcaino", "dob": "1982-08-19", "theme": "Fiesta, globos, banda, mariachi, folklor", "activity": "Bailar zapateado, cumbia y banda", "color": "Cafe, beige y rosa", "song": "Mañanitas alegres o con banda", "photo": ""},
-            {"name": "Oscar Eliecer Lucio Palacio", "dob": "1987-01-01", "theme": "Calabozos y Dragones, libros de terror y fantasía. Magic the gathering", "activity": "Leer, jugar Rol o magic", "color": "negro", "song": "Happy birthday de the Beatles", "photo": ""},
-            {"name": "Nicolás Gilberto Rojas Prado", "dob": "1989-02-04", "theme": "Star War - Vikingos", "activity": "Ramstein", "color": "Negro, tinto, tonos grises", "song": "las mañanitas estilo pink floyd", "photo": ""},
-            {"name": "Lucia Guadalupe Hernández Fierro", "dob": "1993-12-09", "theme": "Harry Potter, aviones, caballos", "activity": "Selena gomez, Taylor Swift", "color": "Rojo y rosa", "song": "La canción que sea", "photo": ""},
-            {"name": "Karla Fernanda Camacho Camacho", "dob": "1994-05-21", "theme": "naturaleza", "activity": "Vincent Vangoh -arte", "color": "verde", "song": "jazz, salsa", "photo": ""},
-            {"name": "Briceyda González", "dob": "1994-11-09", "theme": "Libros, mandalas, café", "activity": "Matisse, Carin León, Leer", "color": "Negro, morado y lila", "song": "Reggetón viejito", "photo": ""},
-            {"name": "Jessica De Anda", "dob": "1995-03-15", "theme": "Tulipanes, mar, perritos y gatitos", "activity": "Hello kitty, hacer ejercicio", "color": "Aqua", "song": "reggaeton o movida", "photo": ""},
-            {"name": "Daniel Amante", "dob": "1996-10-08", "theme": "Los perros, el soccer, la formula 1", "activity": "Adele o CR7", "color": "Rojo", "song": "La que se les ocurra", "photo": ""},
-            {"name": "Valeria", "dob": "1997-03-05", "theme": "Harry potter", "activity": "F1, running", "color": "Negro y rosa", "song": "Nothing's gonna stop us now", "photo": ""},
-            {"name": "Liz", "dob": "1999-01-22", "theme": "Amante de los atardeceres, bosque", "activity": "Carla Morrison, Mon Laferte", "color": "Colores pastel, rosa, azul", "song": "José Luis Rodríguez - Agradecido", "photo": ""},
-            {"name": "Erika Guadalupe Cedano Navarro", "dob": "1999-07-08", "theme": "cute, flores, perritos", "activity": "spiderman, coldplay", "color": "colores pastel", "song": "alguna melodía chida", "photo": ""},
-            {"name": "Priscila Jacqueline Páez Martinez", "dob": "1999-11-23", "theme": "flores, brillos", "activity": "stitch, one direction", "color": "Rojo y azul", "song": "rich girl", "photo": ""},
-            {"name": "Pamela", "dob": "2025-07-08", "theme": "minimalismo", "activity": "rugrats, playa, perros", "color": "Morado", "song": "cualquier canción con vibe de playa", "photo": ""},
-            {"name": "Arturo Joel Martínez Ponce", "dob": "1983-04-27", "theme": "general, de fiesta", "activity": "baile folclórico", "color": "azul", "song": "las mañanitas", "photo": ""},
-            {"name": "Luis Enrique Gastelum Castro", "dob": "1996-08-15", "theme": "Super Héroes, Futbol", "activity": "Marvel, Ricardo Arjona", "color": "Black, blanco, gris", "song": "devuélveme a mi chica", "photo": ""},
-            {"name": "Getzemani David Albavera Soto", "dob": "1987-04-29", "theme": "naturaleza", "activity": "senderismo", "color": "negro", "song": "adventure of a lifetime", "photo": ""},
-            {"name": "Jorge Luis Araya Alfaro", "dob": "1994-02-09", "theme": "Mitología, Magia, Harry Potter", "activity": "Percy Jackson", "color": "Verde, azul y rojo", "song": "Make you feel My Love", "photo": ""},
-            {"name": "Rebeca Sarai Palacios Torres", "dob": "1993-08-19", "theme": "Maquillaje", "activity": "", "color": "Azul marino", "song": "", "photo": ""},
-            {"name": "Oscar Martín Aguilar", "dob": "1990-01-30", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
-            {"name": "Karizma Macías Contreras", "dob": "2025-08-21", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
-            {"name": "Arlette Alejandra Cruzado Rodríguez", "dob": "2025-10-16", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
-            {"name": "Vladimir Zárate Nava", "dob": "2025-12-28", "theme": "", "activity": "", "color": "", "song": "", "photo": ""}, 
-            {"name": "José Antonio Benavides Paredes", "dob": "1995-11-05", "theme": "Animal crossing", "activity": "Tocar música", "color": "Azul", "song": "Tota-pop de Totakeke", "photo": ""}
+      {"name": "Ricardo", "dob": "1979-02-09", "theme": "Star wars o el mar", "activity": "RT D2", "color": "Azul o verde", "song": "Tema de star wars", "photo": ""},
+      {"name": "Norma Isabel Corona Vizcaino", "dob": "1982-08-19", "theme": "Fiesta, globos, banda, mariachi, folklor", "activity": "Bailar zapateado, cumbia y banda", "color": "Cafe, beige y rosa", "song": "Mañanitas alegres o con banda", "photo": ""},
+      {"name": "Oscar Eliecer Lucio Palacio", "dob": "1987-01-01", "theme": "Calabozos y Dragones, libros de terror y fantasía. Magic the gathering", "activity": "Leer, jugar Rol o magic", "color": "negro", "song": "Happy birthday de the Beatles", "photo": ""},
+      {"name": "Nicolás Gilberto Rojas Prado", "dob": "1989-02-04", "theme": "Star War - Vikingos", "activity": "Ramstein", "color": "Negro, tinto, tonos grises", "song": "las mañanitas estilo pink floyd", "photo": ""},
+      {"name": "Lucia Guadalupe Hernández Fierro", "dob": "1993-12-09", "theme": "Harry Potter, aviones, caballos, country girl.", "activity": "Selena gomez, Taylor Swift, Gabito Ballesteros.", "color": "Rojo y rosa", "song": "La canción que sea, menos de rock ni metal", "photo": ""},
+      {"name": "Karla Fernanda Camacho Camacho", "dob": "1994-05-21", "theme": "naturaleza", "activity": "Vincent Vangoh -arte", "color": "verde", "song": "jazz , salsa, la que te guste", "photo": ""},
+      {"name": "Briceyda González", "dob": "1994-11-09", "theme": "Libros, mandalas, café, asesinos seriales, gerberas.", "activity": "Matisse, Carin León, Leer.", "color": "Negro, morado y lila.", "song": "ai nose (Reggetón viejito)", "photo": ""},
+      {"name": "Jessica De Anda", "dob": "1995-03-15", "theme": "Tulipanes, mar, perritos y gatitos, cafe jaja", "activity": "Hello kitty, hacer ejercicio, tomar cafe", "color": "Aqua", "song": "reggaeton champagne jaja no es cierto, puede ser cualquiera, que sea movida", "photo": ""},
+      {"name": "Daniel Amante", "dob": "1996-10-08", "theme": "Los perros, el soccer, la formula 1", "activity": "Adele o CR7", "color": "Rojo", "song": "La que se les ocurra está bien jaja", "photo": ""},
+      {"name": "Valeria", "dob": "1997-03-05", "theme": "Harry potter", "activity": "F1, running", "color": "Negro y rosa", "song": "Nothing's gonna stop us now", "photo": ""},
+      {"name": "Liz", "dob": "1999-01-22", "theme": "Amante de los atardeceres, bosque, flores, de las estrellas que me recuerdan que lo simple es lo más bonito.", "activity": "Carla Morrison, Mon Laferte, Barbie en Un Cuento de Sirenas, peluches", "color": "Colores pastel, rosa, azul", "song": "José Luis Rodríguez - Agradecido", "photo": ""},
+      {"name": "Erika Guadalupe Cedano Navarro", "dob": "1999-07-08", "theme": "cute, flores, perritos", "activity": "spiderman, las alucines, el mariana, PEDRO PASCAL, coldplay.", "color": "colores pastel", "song": "ay no sé pero de banda no, alguna melodía chida de chava.", "photo": ""},
+      {"name": "Priscila Jacqueline Páez Martinez", "dob": "1999-11-23", "theme": "flores, brillos", "activity": "stitch, one direction", "color": "Rojo y azul", "song": "rich girl", "photo": ""},
+      {"name": "Pamela", "dob": "2025-07-08", "theme": "minimalismo", "activity": "playa, Rugrats, los guapos de F1", "color": "Morado", "song": "cualquier canción con vibe de playa", "photo": ""},
+      {"name": "Arturo Joel Martínez Ponce", "dob": "1983-04-27", "theme": "general, de fiesta", "activity": "baile folclórico", "color": "azul", "song": "las mañanitas", "photo": ""},
+      {"name": "Luis Enrique Gastelum Castro", "dob": "1996-08-15", "theme": "Super Héroes, Futbol", "activity": "Marvel, Ricardo Arjona, Naruto Shippuden", "color": "Black, blanco, gris", "song": "devuélveme a mi chica - Hombre G", "photo": ""},
+      {"name": "Getzemani David Albavera Soto", "dob": "1987-04-29", "theme": "naturaleza", "activity": "senderismo", "color": "negro", "song": "adventure of a lifetime", "photo": ""},
+      {"name": "Jorge Luis Araya Alfaro", "dob": "1994-02-09", "theme": "Mitología, Magia, Harry Potter, Percy Jackson", "activity": "Percy Jackson, El atardecer", "color": "Verde, azul y rojo", "song": "Make you feel My Love - Adele", "photo": ""},
+      {"name": "Rebeca Sarai Palacios Torres", "dob": "1993-08-19", "theme": "Maquillaje", "activity": "", "color": "Azul marino", "song": "", "photo": ""},
+      {"name": "Oscar Martín Aguilar", "dob": "1990-01-30", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
+      {"name": "Karizma Macías Contreras", "dob": "2025-08-21", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
+      {"name": "Arlette Alejandra Cruzado Rodríguez", "dob": "2025-10-16", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
+      {"name": "Vladimir Zárate Nava", "dob": "2025-12-28", "theme": "", "activity": "", "color": "", "song": "", "photo": ""}, 
+      {"name": "José Antonio Benavides Paredes", "dob": "1995-11-05", "theme": "Animal crossing", "activity": "Tocar música", "color": "Azul", "song": "Tota-pop de Totakeke", "photo": ""}
     ];
 
-    // Función auxiliar para obtener un color CSS válido de la descripción
     function getColor(colorDesc) {
-      if (!colorDesc) return 'gold'; // Color por defecto
+      if (!colorDesc) return 'gold';
       const desc = colorDesc.toLowerCase();
       if (desc.includes('azul')) return '#007bff';
       if (desc.includes('verde')) return '#28a745';
@@ -222,30 +253,30 @@
       if (desc.includes('cafe') || desc.includes('beige')) return '#8B4513';
       if (desc.includes('gris')) return '#6c757d';
       if (desc.includes('pastel')) return '#ffb6c1';
-      return 'gold'; // Color por defecto si no coincide
+      return 'gold';
     }
 
-    // Configuración de iconos específicos
+    // ICONOS ACTUALIZADOS (Dragón para Oscar, Piñata para Arturo)
     const iconConfig = {
-      "Ricardo": "🌊", // el mar
-      "Norma Isabel Corona Vizcaino": "🎺", // mariachi
-      "Oscar Eliecer Lucio Palacio": "🧙‍♂️", // fantasía
-      "Nicolás Gilberto Rojas Prado": "🪓", // Vikingos
-      "Lucia Guadalupe Hernández Fierro": "🐎", // caballos
-      "Karla Fernanda Camacho Camacho": "🌿", // Naturaleza
-      "Briceyda González": "🔪", // asesinos seriales
-      "Jessica De Anda": "🐾", // perritos y gatitos
-      "Valeria": "⚡", // Harry Potter
-      "Liz": "🌄", // Atardeceres, bosque
-      "Erika Guadalupe Cedano Navarro": "🌸", // flores
-      "Priscila Jacqueline Páez Martinez": "✨", // brillos
-      "Pamela": "🏖️", // playa
-      "Arturo Joel Martínez Ponce": "💃", // Baile folclórico
-      "Luis Enrique Gastelum Castro": "🦸‍♂️", // Superhéroes
-      "Getzemani David Albavera Soto": "🌲", // Naturaleza
-      "Jorge Luis Araya Alfaro": "🔱", // Percy Jackson (Tridente)
-      "Rebeca Sarai Palacios Torres": "💄", // Maquillaje
-      "José Antonio Benavides Paredes": "🎸" // Tocar música
+      "Ricardo": { icon: "🚀", css: "anim-float" },
+      "Norma Isabel Corona Vizcaino": { icon: "🎺", css: "anim-shake" },
+      "Oscar Eliecer Lucio Palacio": { icon: "🐉", css: "anim-float" }, // DRAGÓN en lugar del dado 
+      "Nicolás Gilberto Rojas Prado": { icon: "🪓", css: "anim-shake" },
+      "Lucia Guadalupe Hernández Fierro": { icon: "🐎", css: "anim-bounce" },
+      "Karla Fernanda Camacho Camacho": { icon: "🌻", css: "anim-spin" },
+      "Briceyda González": { icon: "🔪", css: "anim-float" }, 
+      "Jessica De Anda": { icon: "🐶", css: "anim-bounce" },
+      "Valeria": { icon: "⚡", css: "anim-pulse" },
+      "Liz": { icon: "🌅", css: "anim-pulse" },
+      "Erika Guadalupe Cedano Navarro": { icon: "🌸", css: "anim-float" },
+      "Priscila Jacqueline Páez Martinez": { icon: "✨", css: "anim-pulse" },
+      "Pamela": { icon: "🏖️", css: "anim-float" },
+      "Luis Enrique Gastelum Castro": { icon: "🦸‍♂️", css: "anim-bounce" },
+      "Getzemani David Albavera Soto": { icon: "🌲", css: "anim-float" },
+      "Jorge Luis Araya Alfaro": { icon: "🔱", css: "anim-trident" }, 
+      "Rebeca Sarai Palacios Torres": { icon: "💄", css: "anim-float" },
+      "José Antonio Benavides Paredes": { icon: "🎸", css: "anim-shake" },
+      "Arturo Joel Martínez Ponce": { icon: "🪅", css: "anim-pulse" } // PIÑATA para Arturo
     };
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -285,7 +316,8 @@
           }
         }, 1000);
       } catch (error) {
-        console.error("Error al cargar las tarjetas:", error);
+        document.getElementById("error-box").classList.remove("d-none");
+        document.getElementById("error-box").textContent = "Hubo un error cargando las tarjetas: " + error.message;
       }
     });
 
@@ -293,32 +325,28 @@
       const date = p.dob.toLocaleDateString("es-ES", { day: "numeric", month: "long" });
       const cleanName = p.name.trim();
       
-      // Icono principal de la tarjeta (pastel grande)
-      let cardIcon = `<span style="font-size:4rem;">🎂</span>`;
+      let cardIcon = `<span class="universal-emoji" style="font-size:4rem;">🎂</span>`;
       
-      // Excepción: Arturo (Pastel especial grande)
       if (cleanName === "Arturo Joel Martínez Ponce") {
-         cardIcon = `<div class="arturo-cake">🍰</div>`;
+         cardIcon = `<div class="arturo-cake universal-emoji">🍰</div>`;
       }
 
       let nameHTML = `<h5>${p.name}</h5>`;
 
-      // Excepción: Daniel (Avión)
       if (cleanName === "Daniel Amante") {
+         const auraColor = getColor(p.color);
          nameHTML = `
            <div class="plane-container">
-             <div class="plane-icon">✈️</div>
+             <div class="plane-icon universal-emoji" style="--aura-color: ${auraColor};">✈️</div>
              <h5>${p.name}</h5>
            </div>`;
       } else {
-        // Para los demás, buscamos su icono y color
-        const icon = iconConfig[cleanName] || "🎉"; // Icono por defecto
+        const iconData = iconConfig[cleanName] || { icon: "🎉", css: "anim-pulse" };
         const auraColor = getColor(p.color);
         
-        // Creamos el HTML del nombre con el icono y su aura de color
         nameHTML = `
            <h5>
-             <span class="aura-icon" style="--aura-color: ${auraColor};">${icon}</span>
+             <span class="icon-base universal-emoji ${iconData.css}" style="--aura-color: ${auraColor};">${iconData.icon}</span>
              <span style="vertical-align: middle;">${p.name}</span>
            </h5>`;
       }
@@ -338,17 +366,16 @@
 
     function showInfo(person) {
       const cleanName = person.name.trim();
-      let icon = iconConfig[cleanName] || "🎉";
+      const iconData = iconConfig[cleanName] || { icon: "🎉", css: "anim-pulse" };
+      let icon = iconData.icon;
+      let animCss = iconData.css;
       let auraColor = getColor(person.color);
 
-      // Excepciones para el modal
-      if (cleanName === "Arturo Joel Martínez Ponce") icon = "🍰";
-      if (cleanName === "Daniel Amante") icon = "✈️";
+      if (cleanName === "Daniel Amante") { icon = "✈️"; animCss = "anim-pulse"; }
 
       document.getElementById("modalTitle").textContent = person.name;
-      // El icono del modal también tendrá el aura
       document.getElementById("modalEmojiContainer").innerHTML = `
-        <span class="aura-icon" style="font-size: 4rem; --aura-color: ${auraColor};">${icon}</span>
+        <span class="icon-base universal-emoji ${animCss}" style="font-size: 4rem; --aura-color: ${auraColor};">${icon}</span>
       `;
       
       document.getElementById("modalDetails").innerHTML = `
@@ -361,15 +388,16 @@
 
     function showCelebration(person) {
       const cleanName = person.name.trim();
-      let icon = iconConfig[cleanName] || "🎈";
+      const iconData = iconConfig[cleanName] || { icon: "🎈", css: "anim-pulse" };
+      let icon = iconData.icon;
+      let animCss = iconData.css;
       let auraColor = getColor(person.color);
       
-      if (cleanName === "Arturo Joel Martínez Ponce") icon = "🍰";
-      if (cleanName === "Daniel Amante") icon = "✈️";
+      if (cleanName === "Daniel Amante") { icon = "✈️"; animCss = "anim-pulse"; }
 
       document.getElementById("modalTitle").textContent = `🎂 ¡Feliz cumpleaños ${person.name}! 🎉`;
       document.getElementById("modalEmojiContainer").innerHTML = `
-        <span class="aura-icon" style="font-size: 4rem; --aura-color: ${auraColor};">${icon}</span>
+        <span class="icon-base universal-emoji ${animCss}" style="font-size: 4rem; --aura-color: ${auraColor};">${icon}</span>
       `;
 
       document.getElementById("modalDetails").innerHTML = `
@@ -390,15 +418,16 @@
 
     function showNext(person) {
       const cleanName = person.name.trim();
-      let icon = iconConfig[cleanName] || "🎉";
+      const iconData = iconConfig[cleanName] || { icon: "🎉", css: "anim-pulse" };
+      let icon = iconData.icon;
+      let animCss = iconData.css;
       let auraColor = getColor(person.color);
 
-      if (cleanName === "Arturo Joel Martínez Ponce") icon = "🍰";
-      if (cleanName === "Daniel Amante") icon = "✈️";
+      if (cleanName === "Daniel Amante") { icon = "✈️"; animCss = "anim-pulse"; }
 
       document.getElementById("modalTitle").textContent = "🎁 Próximo Cumpleaños";
       document.getElementById("modalEmojiContainer").innerHTML = `
-        <span class="aura-icon" style="font-size: 4rem; --aura-color: ${auraColor};">${icon}</span>
+        <span class="icon-base universal-emoji ${animCss}" style="font-size: 4rem; --aura-color: ${auraColor};">${icon}</span>
       `;
 
       document.getElementById("modalDetails").innerHTML = `
