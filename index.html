@@ -16,7 +16,6 @@
       overflow-x: hidden;
     }
 
-    /* Forzamos a que los iconos usen la librería universal de emojis */
     .universal-emoji {
       font-family: 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif !important;
     }
@@ -62,24 +61,40 @@
       border-radius: 0 0 1rem 1rem;
     }
 
-    .modal-header {
-      background-color: #0b5ed7;
-      color: white;
-      border-top-left-radius: 1rem;
-      border-top-right-radius: 1rem;
-    }
-
+    /* -------------------------------------
+       NUEVAS ANIMACIONES PARA EL MODAL (EL EFECTO "WOW")
+       ------------------------------------- */
     .modal-content {
-      border-radius: 1rem;
+      border-radius: 1.5rem; 
       background-color: white; 
+      border: none;
     }
 
-    .btn-close-white {
-      filter: invert(1);
+    /* 1. El Emoji crece desde cero hasta su tamaño final */
+    .emoji-grow-fx {
+      display: inline-block;
+      animation: popGrow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
+    @keyframes popGrow {
+      0% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* 2. El Texto aparece suavemente (Fade-in) SIN MOVERSE */
+    .details-fade-fx {
+      opacity: 0;
+      animation: simpleFade 0.6s ease forwards;
+      animation-delay: 0.5s; /* Espera medio segundo a que el emoji crezca */
+    }
+    @keyframes simpleFade {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
 
     /* -------------------------------------
-       ANIMACIONES COMBINADAS (MOVIMIENTO + AURA)
+       ANIMACIONES DE MOVIMIENTO Y AURA DE LAS TARJETAS
        ------------------------------------- */
     .icon-base {
       font-size: 1.5rem;
@@ -120,7 +135,6 @@
       50% { transform: scale(1.2); filter: drop-shadow(0 0 12px var(--aura-color, gold)); }
     }
 
-    /* Tu tridente súper épico */
     .anim-trident {
       font-size: 2.2rem !important;
       margin-right: 8px;
@@ -131,7 +145,6 @@
       50% { transform: scale(1.15) translateY(-5px); filter: drop-shadow(0 0 15px var(--aura-color, #0b5ed7)); }
     }
 
-    /* Avión de Daniel */
     .plane-container {
       position: relative;
       display: inline-block;
@@ -153,7 +166,6 @@
       100% { transform: translateX(180px) translateY(-15px) scale(1.2); opacity: 0; filter: drop-shadow(0 0 15px var(--aura-color, red)); }
     }
 
-    /* Pastel Especial Grande de Arturo */
     .arturo-cake {
       font-size: 4rem;
       display: inline-block;
@@ -181,15 +193,17 @@
 <body>
   <div class="modal fade" id="infoModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content text-center border-0 shadow-lg">
-        <div class="modal-header">
-          <h5 class="modal-title w-100 fw-bold" id="modalTitle"></h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div style="font-size: 4rem;" class="universal-emoji" id="modalEmojiContainer"></div>
-          <div id="modalDetails" class="text-start mt-3"></div>
-          <button type="button" class="btn btn-primary mt-4" data-bs-dismiss="modal">Cerrar 🎈</button>
+      <div class="modal-content text-center shadow-lg p-4">
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" style="z-index: 10;"></button>
+        
+        <div class="modal-body p-0">
+          <div id="modalEmojiContainer" style="font-size: 5.5rem; line-height: 1.2;"></div>
+          
+          <h3 id="modalTitle" class="fw-bold mt-2" style="color: #0b5ed7;"></h3>
+          
+          <div id="modalDetails" class="text-start mt-4 px-2" style="font-size: 1.1rem;"></div>
+          
+          <button type="button" class="btn btn-primary mt-4 w-100 rounded-pill" data-bs-dismiss="modal" id="modalBtn">¡Genial! 🎈</button>
         </div>
       </div>
     </div>
@@ -256,11 +270,10 @@
       return 'gold';
     }
 
-    // ICONOS ACTUALIZADOS (Dragón para Oscar, Piñata para Arturo)
     const iconConfig = {
       "Ricardo": { icon: "🚀", css: "anim-float" },
       "Norma Isabel Corona Vizcaino": { icon: "🎺", css: "anim-shake" },
-      "Oscar Eliecer Lucio Palacio": { icon: "🐉", css: "anim-float" }, // DRAGÓN en lugar del dado 
+      "Oscar Eliecer Lucio Palacio": { icon: "🐉", css: "anim-float" }, 
       "Nicolás Gilberto Rojas Prado": { icon: "🪓", css: "anim-shake" },
       "Lucia Guadalupe Hernández Fierro": { icon: "🐎", css: "anim-bounce" },
       "Karla Fernanda Camacho Camacho": { icon: "🌻", css: "anim-spin" },
@@ -276,7 +289,7 @@
       "Jorge Luis Araya Alfaro": { icon: "🔱", css: "anim-trident" }, 
       "Rebeca Sarai Palacios Torres": { icon: "💄", css: "anim-float" },
       "José Antonio Benavides Paredes": { icon: "🎸", css: "anim-shake" },
-      "Arturo Joel Martínez Ponce": { icon: "🪅", css: "anim-pulse" } // PIÑATA para Arturo
+      "Arturo Joel Martínez Ponce": { icon: "🪅", css: "anim-pulse" } 
     };
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -364,18 +377,40 @@
         </div>`;
     }
 
+    // ----------------------------------------------------
+    // FUNCIÓN PARA REINICIAR Y DISPARAR LA ANIMACIÓN EN CASCADA
+    // ----------------------------------------------------
+    function triggerModalAnimations() {
+      const emoji = document.getElementById("modalEmojiContainer");
+      const title = document.getElementById("modalTitle");
+      const details = document.getElementById("modalDetails");
+      const btn = document.getElementById("modalBtn");
+
+      emoji.classList.remove("emoji-grow-fx");
+      title.classList.remove("details-fade-fx");
+      details.classList.remove("details-fade-fx");
+      btn.classList.remove("details-fade-fx");
+
+      void emoji.offsetWidth;
+
+      emoji.classList.add("emoji-grow-fx");
+      title.classList.add("details-fade-fx");
+      details.classList.add("details-fade-fx");
+      btn.classList.add("details-fade-fx");
+    }
+
     function showInfo(person) {
       const cleanName = person.name.trim();
       const iconData = iconConfig[cleanName] || { icon: "🎉", css: "anim-pulse" };
       let icon = iconData.icon;
-      let animCss = iconData.css;
       let auraColor = getColor(person.color);
 
-      if (cleanName === "Daniel Amante") { icon = "✈️"; animCss = "anim-pulse"; }
+      if (cleanName === "Daniel Amante") { icon = "✈️"; }
 
       document.getElementById("modalTitle").textContent = person.name;
+      // Quitamos la clase del movimiento normal para que crezca y se quede quieto con su aura
       document.getElementById("modalEmojiContainer").innerHTML = `
-        <span class="icon-base universal-emoji ${animCss}" style="font-size: 4rem; --aura-color: ${auraColor};">${icon}</span>
+        <span class="universal-emoji" style="--aura-color: ${auraColor}; filter: drop-shadow(0 0 15px var(--aura-color));">${icon}</span>
       `;
       
       document.getElementById("modalDetails").innerHTML = `
@@ -383,21 +418,24 @@
         <p><strong>⭐ Tema:</strong> ${person.theme || 'Sorpresa'}</p>
         <p><strong>❤️ Le gusta:</strong> ${person.activity || 'Pasarla bien'}</p>
         <p><strong>🎵 Canción:</strong> ${person.song || 'Cualquiera para bailar'}</p>`;
-      new bootstrap.Modal("#infoModal").show();
+      
+      triggerModalAnimations();
+      
+      const modalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById('infoModal'));
+      modalInstance.show();
     }
 
     function showCelebration(person) {
       const cleanName = person.name.trim();
       const iconData = iconConfig[cleanName] || { icon: "🎈", css: "anim-pulse" };
       let icon = iconData.icon;
-      let animCss = iconData.css;
       let auraColor = getColor(person.color);
       
-      if (cleanName === "Daniel Amante") { icon = "✈️"; animCss = "anim-pulse"; }
+      if (cleanName === "Daniel Amante") { icon = "✈️"; }
 
-      document.getElementById("modalTitle").textContent = `🎂 ¡Feliz cumpleaños ${person.name}! 🎉`;
+      document.getElementById("modalTitle").textContent = `¡Feliz cumpleaños ${person.name}!`;
       document.getElementById("modalEmojiContainer").innerHTML = `
-        <span class="icon-base universal-emoji ${animCss}" style="font-size: 4rem; --aura-color: ${auraColor};">${icon}</span>
+        <span class="universal-emoji" style="--aura-color: ${auraColor}; filter: drop-shadow(0 0 15px var(--aura-color));">${icon}</span>
       `;
 
       document.getElementById("modalDetails").innerHTML = `
@@ -405,7 +443,11 @@
         <p><strong>⭐ Tema:</strong> ${person.theme || 'Sorpresa'}</p>
         <p><strong>❤️ Le gusta:</strong> ${person.activity || 'Pasarla bien'}</p>
         <p><strong>🎵 Canción:</strong> ${person.song || 'Cualquiera para bailar'}</p>`;
-      new bootstrap.Modal("#infoModal").show();
+      
+      triggerModalAnimations();
+      
+      const modalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById('infoModal'));
+      modalInstance.show();
 
       const end = Date.now() + 2 * 1000;
       (function frame() {
@@ -420,24 +462,27 @@
       const cleanName = person.name.trim();
       const iconData = iconConfig[cleanName] || { icon: "🎉", css: "anim-pulse" };
       let icon = iconData.icon;
-      let animCss = iconData.css;
       let auraColor = getColor(person.color);
 
-      if (cleanName === "Daniel Amante") { icon = "✈️"; animCss = "anim-pulse"; }
+      if (cleanName === "Daniel Amante") { icon = "✈️"; }
 
       document.getElementById("modalTitle").textContent = "🎁 Próximo Cumpleaños";
       document.getElementById("modalEmojiContainer").innerHTML = `
-        <span class="icon-base universal-emoji ${animCss}" style="font-size: 4rem; --aura-color: ${auraColor};">${icon}</span>
+        <span class="universal-emoji" style="--aura-color: ${auraColor}; filter: drop-shadow(0 0 15px var(--aura-color));">${icon}</span>
       `;
 
       document.getElementById("modalDetails").innerHTML = `
-        <h4 class="fw-bold mb-2">${person.name}</h4>
-        <p>Fecha: <strong>${person.dob.toLocaleDateString("es-ES", { day: "numeric", month: "long" })}</strong></p>
+        <h4 class="fw-bold mb-3 text-center" style="color: #333;">${person.name}</h4>
+        <p><strong>📅 Fecha:</strong> ${person.dob.toLocaleDateString("es-ES", { day: "numeric", month: "long" })}</p>
         <p><strong>🎨 Color favorito:</strong> ${person.color || 'No especificado'}</p>
         <p><strong>⭐ Tema:</strong> ${person.theme || 'Sorpresa'}</p>
         <p><strong>❤️ Le gusta:</strong> ${person.activity || 'Pasarla bien'}</p>
         <p><strong>🎵 Canción:</strong> ${person.song || 'Cualquiera para bailar'}</p>`;
-      new bootstrap.Modal("#infoModal").show();
+      
+      triggerModalAnimations();
+      
+      const modalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById('infoModal'));
+      modalInstance.show();
     }
   </script>
 </body>
