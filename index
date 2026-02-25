@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cumpleaños del Equipo CCF</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    body {
+      background: linear-gradient(to top, #c1e1ff 0%, #f0f9ff 100%);
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    h1, h2 {
+      color: #0b5ed7;
+      font-weight: bold;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .birthday-card {
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .birthday-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .next-birthday-card {
+      border: 2px solid #0b5ed7;
+      animation: pulseAccent 2s infinite;
+    }
+
+    @keyframes pulseAccent {
+      0% { box-shadow: 0 0 0 0 rgba(11, 94, 215, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(11, 94, 215, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(11, 94, 215, 0); }
+    }
+
+    .today-birthday .card-body {
+      background-color: #d8f9e0;
+      border-radius: 0 0 1rem 1rem;
+    }
+
+    .modal-header {
+      background-color: #0b5ed7;
+      color: white;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+
+    .modal-content {
+      border-radius: 1rem;
+    }
+
+    .btn-close-white {
+      filter: invert(1);
+    }
+
+    #nextBirthdayModal .modal-content {
+      background: linear-gradient(180deg, #ffffff 0%, #f3f6ff 100%);
+      border-radius: 1rem;
+      animation: zoomIn 0.4s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* -------------------------------------
+       ANIMACIONES PERSONALIZADAS (TIPO GIF)
+       ------------------------------------- */
+
+    /* Animación del Avión para Daniel */
+    .plane-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    .plane-icon {
+      position: absolute;
+      top: -30px;
+      left: 0;
+      font-size: 1.8rem;
+      animation: flyPlane 4s infinite linear;
+      z-index: 10;
+      pointer-events: none; /* Para que no estorbe al dar clic */
+    }
+    @keyframes flyPlane {
+      0% { transform: translateX(-40px) translateY(15px) scale(0.8); opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateX(180px) translateY(-15px) scale(1.2); opacity: 0; }
+    }
+
+    /* Animación del Pastel Especial para Arturo */
+    .arturo-cake {
+      font-size: 4rem;
+      display: inline-block;
+      animation: bounceCake 2s infinite ease-in-out;
+      position: relative;
+    }
+    .arturo-cake::after {
+      content: '✨🎉';
+      position: absolute;
+      top: -15px;
+      right: -30px;
+      font-size: 1.5rem;
+      animation: sparkle 1.5s infinite alternate ease-in-out;
+    }
+    @keyframes bounceCake {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-12px) scale(1.05); }
+    }
+    @keyframes sparkle {
+      0% { opacity: 0.3; transform: scale(0.8) rotate(-10deg); }
+      100% { opacity: 1; transform: scale(1.3) rotate(10deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="modal fade" id="infoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title w-100 fw-bold" id="modalTitle"></h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div style="font-size: 3rem;" id="modalEmoji">🎂</div>
+          <div id="modalDetails" class="text-start mt-3"></div>
+          <button type="button" class="btn btn-primary mt-4" data-bs-dismiss="modal">Cerrar 🎈</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container py-5">
+    <h1>🥳 Cumpleaños del Equipo CCF 🥳</h1>
+
+    <h2 class="mb-3">🎁 Próximo Cumpleaños</h2>
+    <div id="next-birthday" class="row mb-5 justify-content-center"></div>
+
+    <h2 class="mb-3">💖 Cumpleaños de Este Mes</h2>
+    <div id="this-month" class="row g-4 mb-5"></div>
+
+    <h2 class="mb-3">🗓️ Todos los Cumpleaños</h2>
+    <div id="all-birthdays" class="row g-4"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    const birthdayData = [
+            {"name": "Ricardo", "dob": "1979-02-09", "theme": "Star wars o el mar", "activity": "RT D2", "color": "Azul o verde", "song": "Tema de star wars", "photo": ""},
+            {"name": "Norma Isabel Corona Vizcaino", "dob": "1982-08-19", "theme": "Fiesta, globos, banda, mariachi, folklor", "activity": "Bailar zapateado, cumbia y banda", "color": "Cafe, beige y rosa", "song": "Mañanitas alegres o con banda", "photo": "https..."},
+            {"name": "Oscar Eliecer Lucio Palacio", "dob": "1987-01-01", "theme": "Calabozos y Dragones, libros de terror y fantasía. Magic the gathering", "activity": "Leer, jugar Rol o magic", "color": "negro", "song": "\"Happy birthday\" de the Beatles o ", "photo": ""},
+            {"name": "Nicolás Gilberto Rojas Prado", "dob": "1989-02-04", "theme": "Star War - Vikingos ", "activity": "Ramstein", "color": "Negro, tinto, tonos grises ", "song": "las mañanitas estilo pink floyd", "photo": ""},
+            {"name": "Lucia Guadalupe Hernández Fierro", "dob": "1993-12-09", "theme": "Harry Potter, aviones, caballos, country girl.", "activity": "Selena gomez, Taylor Swift, Gabito Ballesteros.", "color": "Rojo y rosa", "song": "La canción que sea, menos de rock ni metal", "photo": "https..."},
+            {"name": "Karla Fernanda Camacho Camacho", "dob": "1994-05-21", "theme": "naturaleza ", "activity": "Vincent Vangoh -arte ", "color": "verdeeeee", "song": "jazz , salsa, la que te guste ", "photo": ""},
+            {"name": "Briceyda González", "dob": "1994-11-09", "theme": "Libros, mandalas, café, asesinos seriales, gerberas.", "activity": "Matisse, Carin León, Leer. ", "color": "Negro, morado y lila. ", "song": "ai nose (Reggetón viejito) ", "photo": ""},
+            {"name": "Jessica De Anda ", "dob": "1995-03-15", "theme": "Tulipanes, mar, perritos y gatitos, cafe jaja ", "activity": "Hello kitty, hacer ejercicio, tomar cafe", "color": "Aqua", "song": "reggaeton champagne jaja no es cierto, puede ser cualquiera, que sea movida ", "photo": "https..."},
+            {"name": "Daniel Amante", "dob": "1996-10-08", "theme": "Los perros, el soccer, la formula 1 ", "activity": "Adele o CR7", "color": "Rojo", "song": "La que se les ocurra está bien jaja", "photo": ""},
+            {"name": "Valeria", "dob": "1997-03-05", "theme": "Harry potter ", "activity": "F1, running", "color": "Negro y rosa", "song": "Nothing's gonna stop us now", "photo": "https..."},
+            {"name": "Liz", "dob": "1999-01-22", "theme": "Amante de los atardeceres, bosque, flores, de las estrellas que me recuerdan que lo simple es lo más bonito.", "activity": "Carla Morrison, Mon Laferte, Barbie en Un Cuento de Sirenas, peluches ", "color": "Colores pastel, rosa, azul", "song": "José Luis Rodríguez - Agradecido", "photo": ""},
+            {"name": "Erika Guadalupe Cedano Navarro", "dob": "1999-07-08", "theme": "cute, flores, perritos", "activity": "spiderman, las alucines, el mariana, PEDRO PASCAL, coldplay.", "color": "colores pastel", "song": "ay no sé pero de banda no, alguna melodía chida de chava.", "photo": "https..."},
+            {"name": "Priscila Jacqueline Páez Martinez ", "dob": "1999-11-23", "theme": "flores, brillos", "activity": "stitch, one direction ", "color": "Rojo y azul ", "song": "rich girl", "photo": "https..."},
+            {"name": "Pamela", "dob": "2025-07-08", "theme": "minimalismo", "activity": "rugrats, playa, perros, naturaleza", "color": "Morado", "song": "cualquier canción con vibe de playa", "photo": ""},
+            {"name": "Arturo Joel Martínez Ponce", "dob": "1983-04-27", "theme": "general, de fiesta", "activity": "baile folclórico", "color": "azul", "song": "las mañanitas", "photo": ""},
+            {"name": "Luis Enrique Gastelum Castro", "dob": "1996-08-15", "theme": "Super Héroes, Futbol, ", "activity": "Marvel, Ricardo Arjona, Naruto Shippuden ", "color": "Black, blanco, gris, ", "song": "devuélveme a mi chica - Hombre G", "photo": "https..."},
+            {"name": "Getzemani David Albavera Soto ", "dob": "1987-04-29", "theme": "naturaleza", "activity": "senderismo ", "color": "negro", "song": "adventure of a lifetime", "photo": ""},
+            {"name": "Jorge Luis Araya Alfaro ", "dob": "1994-02-09", "theme": "Mitología, Magia, Harry Potter, Percy Jackson", "activity": "Percy Jackson, El atardecer ", "color": "Verde, azul y rojo ", "song": "Make you feel My Love - Adele", "photo": "https...t"},
+            {"name": "Rebeca Sarai Palacios Torres", "dob": "1993-08-19", "theme": "Maquillaje", "color": "Azul marino", "photo": ""},
+            {"name": "Oscar Martín Aguilar", "dob": "1990-01-30", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
+            {"name": "Karizma Macías Contreras", "dob": "2025-08-21", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
+            {"name": "Arlette Alejandra Cruzado Rodríguez", "dob": "2025-10-16", "theme": "", "activity": "", "color": "", "song": "", "photo": ""},
+            {"name": "Vladimir Zárate Nava", "dob": "2025-12-28", "theme": "", "activity": "", "color": "", "song": "", "photo": ""}, 
+            {"name": "José Antonio Benavides Paredes", "dob": "1995-11-05", "theme": "Animal crossing", "activity": "Tocar música", "color": "Azul", "song": "Tota-pop de Totakeke", "photo": ""}
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date();
+      const currentMonth = today.getMonth();
+      const currentDate = today.getDate();
+
+      const processed = birthdayData.map(p => {
+        const dob = new Date(p.dob + "T00:00");
+        return { ...p, dob, month: dob.getMonth(), day: dob.getDate(), isToday: dob.getMonth() === currentMonth && dob.getDate() === currentDate };
+      }).sort((a,b) => a.month - b.month || a.day - b.day);
+
+      const todayBirthdays = processed.filter(p => p.isToday);
+      let next = processed.find(p => p.month > currentMonth || (p.month === currentMonth && p.day >= currentDate));
+      if (!next) next = processed[0];
+
+      // Mostrar tarjetas
+      document.getElementById("next-birthday").innerHTML = createCard(next, true);
+      const monthBirthdays = processed.filter(p => p.month === currentMonth);
+      document.getElementById("this-month").innerHTML = monthBirthdays.length
+        ? monthBirthdays.map(p => createCard(p)).join("")
+        : "<p class='text-muted'>No hay cumpleaños este mes.</p>";
+      document.getElementById("all-birthdays").innerHTML = processed.map(p => createCard(p)).join("");
+
+      // Clics en tarjetas
+      document.querySelectorAll(".birthday-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const person = processed.find(p => p.name === card.dataset.name);
+          showInfo(person);
+        });
+      });
+
+      // Ventana emergente automática
+      setTimeout(() => {
+        if (todayBirthdays.length > 0) {
+          showCelebration(todayBirthdays[0]);
+        } else {
+          showNext(next);
+        }
+      }, 1000);
+    });
+
+    function createCard(p, highlight = false) {
+      const date = p.dob.toLocaleDateString("es-ES", { day: "numeric", month: "long" });
+      
+      // Valores por defecto para la tarjeta
+      let cardIcon = `<span style="font-size:4rem;">🎂</span>`;
+      let nameHTML = `<h5>${p.name}</h5>`;
+
+      // 🎨 PERSONALIZACIÓN: Arturo Joel Martínez Ponce
+      if (p.name === "Arturo Joel Martínez Ponce") {
+         cardIcon = `<div class="arturo-cake">🍰</div>`;
+      }
+
+      // 🎨 PERSONALIZACIÓN: Daniel Amante
+      if (p.name === "Daniel Amante") {
+         nameHTML = `
+           <div class="plane-container">
+             <div class="plane-icon">✈️</div>
+             <h5>${p.name}</h5>
+           </div>
+         `;
+      }
+
+      return `
+        <div class="col-md-4 col-lg-3">
+          <div class="card birthday-card h-100 ${highlight ? "next-birthday-card" : ""} ${p.isToday ? "today-birthday" : ""}" data-name="${p.name}">
+            <div class="text-center pt-4 pb-2">${cardIcon}</div>
+            <div class="card-body text-center d-flex flex-column justify-content-center">
+              ${nameHTML}
+              <p class="text-muted mb-0">${date}</p>
+              ${p.isToday ? '<div class="mt-2"><span class="badge bg-success">¡ES HOY!</span></div>' : ""}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function showInfo(person) {
+      document.getElementById("modalTitle").textContent = person.name;
+      document.getElementById("modalEmoji").textContent = "🎉";
+      document.getElementById("modalDetails").innerHTML = `
+        <p><strong>🎨 Color favorito:</strong> ${person.color}</p>
+        <p><strong>⭐ Tema:</strong> ${person.theme}</p>
+        <p><strong>❤️ Le gusta:</strong> ${person.activity}</p>
+        <p><strong>🎵 Canción:</strong> ${person.song}</p>`;
+      new bootstrap.Modal("#infoModal").show();
+    }
+
+    function showCelebration(person) {
+      document.getElementById("modalTitle").textContent = `🎂 ¡Feliz cumpleaños ${person.name}! 🎉`;
+      document.getElementById("modalEmoji").textContent = "🎈";
+      document.getElementById("modalDetails").innerHTML = `
+        <p><strong>🎨 Color favorito:</strong> ${person.color}</p>
+        <p><strong>⭐ Tema:</strong> ${person.theme}</p>
+        <p><strong>❤️ Le gusta:</strong> ${person.activity}</p>
+        <p><strong>🎵 Canción:</strong> ${person.song}</p>`;
+      new bootstrap.Modal("#infoModal").show();
+
+      // Confeti
+      const end = Date.now() + 2 * 1000;
+      (function frame() {
+        confetti({ particleCount: 5, spread: 100, origin: { x: Math.random(), y: Math.random() - 0.2 } });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+
+    function showNext(person) {
+      document.getElementById("modalTitle").textContent = "🎁 Próximo Cumpleaños";
+      document.getElementById("modalEmoji").textContent = "🎉";
+      document.getElementById("modalDetails").innerHTML = `
+        <h4 class="fw-bold mb-2">${person.name}</h4>
+        <p>Fecha: <strong>${person.dob.toLocaleDateString("es-ES", { day: "numeric", month: "long" })}</strong></p>
+        <p><strong>🎨 Color favorito:</strong> ${person.color}</p>
+        <p><strong>⭐ Tema:</strong> ${person.theme}</p>
+        <p><strong>❤️ Le gusta:</strong> ${person.activity}</p>
+        <p><strong>🎵 Canción:</strong> ${person.song}</p>`;
+      new bootstrap.Modal("#infoModal").show();
+    }
+  </script>
+</body>
+</html>
